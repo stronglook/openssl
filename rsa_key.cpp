@@ -10,24 +10,24 @@ EVP_PKEY* RSAKey::generateRSAKey(unsigned int keyBits)
     EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL);
     EVP_PKEY_keygen_init(ctx);
     EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, keyBits);
-    EVP_PKEY_keygen(ctx, &pkey);
+    EVP_PKEY_keygen(ctx, &m_pkey);
     EVP_PKEY_CTX_free(ctx);
 
-    return pkey;
+    return m_pkey;
 }
 
 std::string RSAKey::getPublicKey()
 {
 
     BIO* out = BIO_new(BIO_s_mem());
-    PEM_write_bio_PUBKEY(out, pkey);
+    PEM_write_bio_PUBKEY(out, m_pkey);
     return BIOToString(out);
 }
 
 std::string RSAKey::getPrivateKey()
 {
     BIO* out = BIO_new(BIO_s_mem());
-    PEM_write_bio_PrivateKey(out, pkey, NULL, NULL, 0, 0, NULL);
+    PEM_write_bio_PrivateKey(out, m_pkey, NULL, NULL, 0, 0, NULL);
     return BIOToString(out);
 }
 
