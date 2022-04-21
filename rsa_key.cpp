@@ -47,7 +47,7 @@ std::string RSAKey::BIOToString(BIO* bio)
 
 RSAKey::~RSAKey()
 {
-    if (pkey) {
-        EVP_PKEY_free(pkey);
+    if (m_pkey) {
+        EVP_PKEY_free(m_pkey);
     }
 }
