@@ -43,19 +43,19 @@ std::pair<unsigned char*, std::size_t> PKey::decrypt(std::pair<unsigned char*, s
         throw std::runtime_error("EVP_PKEY_decrypt_init");
     }
 
-    size_t outlen;
+    std::size_t outlen;
 
     if (EVP_PKEY_decrypt(m_ctx, NULL, &outlen, encryptedBytes, encryptedBytesLen) <= 0) {
         throw std::runtime_error("EVP_PKEY_decrypt (out NULL)");
     }
 
-    unsigned char *pOutText = new unsigned char[outlen];
+    unsigned char *outText = new unsigned char[outlen];
 
-    if (EVP_PKEY_decrypt(m_ctx, pOutText, &outlen, encryptedBytes, encryptedBytesLen) <= 0) {
+    if (EVP_PKEY_decrypt(m_ctx, outText, &outlen, encryptedBytes, encryptedBytesLen) <= 0) {
         throw std::runtime_error("EVP_PKEY_decrypt");
     }
 
-    return std::pair<unsigned char*, size_t>(pOutText, outlen);
+    return std::pair<unsigned char*, size_t>(outText, outlen);
 }
 
 PKey::~PKey()
