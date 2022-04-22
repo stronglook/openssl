@@ -9,6 +9,7 @@ CONFIG -= app_bundle
 
 SOURCES += \
         main.cpp \
+        pkey.cpp \
         rsa_key.cpp
 
 QMAKE_CFLAGS += -fpermissive
@@ -25,4 +26,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    pkey.h \
     rsa_key.h
