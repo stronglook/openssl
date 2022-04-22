@@ -12,11 +12,14 @@ int main(int argc, char *argv[])
 
     PKey pkey(key.getPKey());
     unsigned char data[] = "hello";
-    qDebug() << pkey.decrypt(pkey.encrypt(data)).second;
 
-    for (int i = 0; i < pkey.decrypt(pkey.encrypt(data)).second; i++)
+    auto dataPair = pkey.decrypt(pkey.encrypt(data));
+    std::size_t len = dataPair.second;
+    unsigned char* decrypted = dataPair.first;
+
+    for (std::size_t i = 0; i < len; i++)
     {
-        qDebug() << (char)pkey.decrypt(pkey.encrypt(data)).first[i];
+        qDebug() << (char)decrypted[i];
     }
 
     return a.exec();
