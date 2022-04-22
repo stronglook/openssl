@@ -12,22 +12,22 @@ PKey::PKey(EVP_PKEY *pkey) : m_pkey(pkey)
     }
 }
 
-std::pair<unsigned char*, std::size_t> PKey::encrypt(const unsigned char *pInText)
+std::pair<unsigned char*, std::size_t> PKey::encrypt(const unsigned char *text)
 {
     if (EVP_PKEY_encrypt_init(m_ctx) <= 0) {
         throw std::runtime_error("EVP_PKEY_encrypt_init");
     }
 
     std::size_t outBytesLen;
-    std::size_t in_text_len = (std::size_t)std::strlen((char*)pInText);
+    std::size_t textLen = (std::size_t)std::strlen((char*)text);
 
-    if (EVP_PKEY_encrypt(m_ctx, NULL, &outBytesLen, pInText, in_text_len) <= 0) {
+    if (EVP_PKEY_encrypt(m_ctx, NULL, &outBytesLen, text, textLen) <= 0) {
         throw std::runtime_error("EVP_PKEY_encrypt (out NULL)");
     }
 
     unsigned char *outBytes = new unsigned char[outBytesLen];
 
-    if (EVP_PKEY_encrypt(m_ctx, outBytes, &outBytesLen, pInText, in_text_len) <= 0) {
+    if (EVP_PKEY_encrypt(m_ctx, outBytes, &outBytesLen, text, textLen) <= 0) {
         throw std::runtime_error("EVP_PKEY_encrypt");
     }
 
