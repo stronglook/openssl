@@ -65,7 +65,9 @@ void TLSClient::setMinProtoVersion(int version)
             throw std::runtime_error("Incorrect protocol version");
     }
 
-    SSL_CTX_set_min_proto_version(m_ctx, TLS1_2_VERSION);
+    if (SSL_CTX_set_min_proto_version(m_ctx, TLS1_2_VERSION) != 1) {
+        throw std::runtime_error("SSL_CTX_set_min_proto_version error");
+    }
 }
 
 void TLSClient::loadVerifyLocation(const std::string &certPath)
