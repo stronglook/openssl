@@ -33,7 +33,9 @@ TLSConnection TLSClient::connect(const char *ip, unsigned short port, const std:
         throw std::runtime_error("SSL_new error");
     }
 
-    SSL_set_tlsext_host_name(ssl, host.c_str());
+    if (SSL_set_tlsext_host_name(ssl, host.c_str()) != 1) {
+        throw std::runtime_error("SSL_set_tlsext_host_name error");
+    }
 
     if (SSL_set_fd(ssl, sock) != 1) {
         throw std::runtime_error("SSL_set_fd error");
