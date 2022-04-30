@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include "tls_server.h"
+#include "tls_client.h"
 #include "rsa_key.h"
 #include "pkey.h"
 #include "aes.h"
@@ -40,12 +41,15 @@ int main(int argc, char *argv[])
 
     // req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout privateKey.key -out certificate.crt
 
-    TLSServer server;
-    QObject::connect(&server, &TLSServer::accepted, [](void* ssl)
+    /*TLSServer server;
+    std::unordered_map<SOCKET, std::shared_ptr<TLSConnection>> connections;
+    QObject::connect(&server, &TLSServer::accepted, [&connections](std::shared_ptr<TLSConnection> connection)
     {
+        connections.insert({connection->getSocket(), connection});
         qDebug() << "Accepted!!!";
-        const char reply[] = "Hello from TLS server!\n";
-        SSL_write((SSL*)ssl, reply, strlen(reply));
+        char reply[] = "Hello from TLS server";
+        int res = connection->write(reply, strlen(reply));
+        qDebug() << "Server writed " << res << " bytes";
     });
 
     QObject::connect(&server, &TLSServer::error, [](std::string e)
@@ -54,6 +58,28 @@ int main(int argc, char *argv[])
     });
 
     server.start(4433, "./debug/cert.crt", "./debug/key.key");
+    */
+
+    try {
+        std::string certPath = "C:/Users/user/Documents/build-tls_server-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/debug/cert.crt";
+
+        TLSClient client;
+        client.setMinProtoVersion(TLS1_2_VERSION);
+        client.loadVerifyLocation(certPath);
+        TLSConnection connection = client.connect("127.0.0.1", 4433, "127.0.0.1");
+
+        char data[] = "new client message";
+        int len = strlen(data);
+        int res = connection.write(data, len);
+        qDebug() << "Connection write res: " << res;
+        int result = connection.read(data, len);
+        for (int i = 0; i < result; i++)
+        {
+            qDebug() << data[i];
+        }
+    } catch (std::runtime_error& e) {
+        qDebug() << e.what();
+    }
 
     return a.exec();
 }

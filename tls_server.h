@@ -3,12 +3,15 @@
 #include <stdexcept>
 #include <string>
 #include <atomic>
+#include <memory>
 
 #include <QObject>
 
 #include <winsock2.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+
+#include "tls_connection.h"
 
 class TLSServer : public QObject
 {
@@ -28,6 +31,6 @@ private:
     SOCKET m_socket;
 
 signals:
-    void accepted(void* ssl);
+    void accepted(std::shared_ptr<TLSConnection> connection);
     void error(std::string error);
 };

@@ -1,4 +1,5 @@
 #include "tls_server.h"
+#include <QDebug>
 
 TLSServer::TLSServer()
 {
@@ -39,16 +40,14 @@ void TLSServer::start(int port, const std::string &certPath, const std::string &
             continue;
         }
 
-        if (SSL_accept(ssl) != 1) {
+        if ((SSL_accept(ssl)) != 1) {
             emit error("SSL_accept error");
             continue;
+        } else {
+            qDebug() << "There...";
         }
 
-        emit accepted(ssl);
-
-        SSL_shutdown(ssl);
-        SSL_free(ssl);
-        closesocket(client);
+        emit accepted(std::make_shared<TLSConnection>(client, ssl));
     }
 }
 
