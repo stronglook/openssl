@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include "tls_server.h"
 #include "rsa_key.h"
 #include "pkey.h"
 #include "aes.h"
@@ -36,6 +37,23 @@ int main(int argc, char *argv[])
     {
         qDebug() << (char)aesDecryptResult.first[i];
     }
+
+    // req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout privateKey.key -out certificate.crt
+
+    TLSServer server;
+    QObject::connect(&server, &TLSServer::accepted, [](void* ssl)
+    {
+        qDebug() << "Accepted!!!";
+        const char reply[] = "Hello from TLS server!\n";
+        SSL_write((SSL*)ssl, reply, strlen(reply));
+    });
+
+    QObject::connect(&server, &TLSServer::error, [](std::string e)
+    {
+        qDebug() << e.c_str();
+    });
+
+    server.start(4433, "./debug/cert.crt", "./debug/key.key");
 
     return a.exec();
 }
